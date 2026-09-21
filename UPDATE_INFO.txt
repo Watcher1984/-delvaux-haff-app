@@ -1,2 +1,17 @@
-Nur Darstellung geändert: Logo im Kopfbereich auf 48 x 48 Pixel begrenzt.
-Keine Datenmigration und keine Änderung an Rindern, Hennen, Verlusten, Eiern, Aufgaben oder Checklisten.
+Zusatzupdate: Checkliste Rinder.
+Bestehende Nutzdaten werden nicht zurückgesetzt. Neu ist ausschließlich data.cattleChecks und die zugehörige Oberfläche.
+
+Enthalten:
+- Futter / Heu kontrolliert
+- Anzahl kleine Heuballen
+- Anzahl große Heuballen
+- Wassertank kontrolliert
+- Wassertank nachgefüllt
+- Zaunkontrolle
+- Gesundheitskontrolle
+- Kontrolle auf Verletzungen, Lahmheit, Apathie oder andere Auffälligkeiten
+- Bemerkung
+- Finger-Unterschrift mit Löschen / Übernehmen
+- Datum und Speicherzeit
+- Verlauf
+- Kontrollbericht als PDF/Druckansicht

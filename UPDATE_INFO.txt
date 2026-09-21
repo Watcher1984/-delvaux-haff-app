@@ -1,3 +1,2 @@
-Zusatzupdate zur Hühner-Checkliste.
-Bestehende Rinder, Ohrmarken, Namen, Hennenbestand, historische Verluste, Eier, Aufgaben und vorhandene Checklisten bleiben erhalten.
-Neu: Finger-Unterschrift mit Löschen/Übernehmen, Speicherzeit, gespeicherte Unterschrift pro Tageskontrolle und druckbarer Kontrollbericht. Auf iPhone im Druckdialog über Teilen/Als PDF sichern verwendbar.
+Nur Darstellung geändert: Logo im Kopfbereich auf 48 x 48 Pixel begrenzt.
+Keine Datenmigration und keine Änderung an Rindern, Hennen, Verlusten, Eiern, Aufgaben oder Checklisten.

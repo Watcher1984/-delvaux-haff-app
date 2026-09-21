@@ -7,3 +7,16 @@ main{max-width:900px;margin:auto;padding:15px 14px 100px}.stats,.quick{display:g
 .modalbg{position:fixed;inset:0;background:#0007;display:grid;place-items:end center;z-index:10}.modal{background:#fff;width:100%;max-width:600px;border-radius:22px 22px 0 0;padding:18px;max-height:90vh;overflow:auto}.modal h2{margin-top:0}.field{display:grid;gap:5px;margin:10px 0}.field label{font-size:12px;font-weight:700;color:var(--muted)}input,select,textarea{width:100%;padding:12px;border:1px solid #cbd1cb;border-radius:10px;font:inherit;background:#fff}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}.back{border:0;background:transparent;color:#fff;font-size:15px;padding:0 0 9px}
 .logpos{color:#17623c}.logneg{color:#9b2c2c}
 @media(min-width:720px){.stats,.quick{grid-template-columns:repeat(4,1fr)}}
+
+.brandhead{display:flex;align-items:center;gap:12px}.hafflogo{width:58px;height:58px;border-radius:50%;object-fit:cover;background:#f4ecd8;border:2px solid #ffffff55;flex:none}
+
+/* Delvaux's Haff header logo – compact */
+header img[src*="haff-logo"], .brand-logo, .header-logo {
+  width: 48px !important;
+  height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  flex: 0 0 48px !important;
+}

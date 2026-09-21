@@ -1,17 +1,7 @@
-Zusatzupdate: Checkliste Rinder.
-Bestehende Nutzdaten werden nicht zurückgesetzt. Neu ist ausschließlich data.cattleChecks und die zugehörige Oberfläche.
-
-Enthalten:
-- Futter / Heu kontrolliert
-- Anzahl kleine Heuballen
-- Anzahl große Heuballen
-- Wassertank kontrolliert
-- Wassertank nachgefüllt
-- Zaunkontrolle
-- Gesundheitskontrolle
-- Kontrolle auf Verletzungen, Lahmheit, Apathie oder andere Auffälligkeiten
-- Bemerkung
-- Finger-Unterschrift mit Löschen / Übernehmen
-- Datum und Speicherzeit
-- Verlauf
-- Kontrollbericht als PDF/Druckansicht
+Update App-Icon:
+- Delvaux's-Haff-Logo als iPhone/Home-Screen-Icon
+- apple-touch-icon.png 180x180
+- PWA Icons 192x192 und 512x512
+- Manifest angepasst
+- Rinder-Checkliste aus der vorherigen Version bleibt enthalten
+- Bestehende lokale Nutzdaten werden nicht zurückgesetzt oder verändert

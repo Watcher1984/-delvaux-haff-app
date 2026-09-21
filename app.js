@@ -40,7 +40,7 @@ function save(){data.groups.forEach(g=>g.hens=(+g.active||0)+(+g.separated||0));
 save();
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function nav(){return `<nav><button onclick="H.go('home')"><i>🏠</i>Start</button><button onclick="H.go('animals')"><i>🐄</i>Tiere</button><button onclick="H.go('groups')"><i>🐔</i>Hühner</button><button onclick="H.go('eggs')"><i>🥚</i>Eier</button><button onclick="H.go('tasks')"><i>✅</i>Aufgaben</button></nav>`}
-function head(t,s,back=false){return `<header>${back?`<button class="back" onclick="H.go('groups')">‹ Hühner</button>`:''}<h1>${esc(t)}</h1><p>${esc(s)}</p></header>`}
+function head(t,s,back=false){return `<header>${back?`<button class="back" onclick="H.go('groups')">‹ Hühner</button>`:''}<div class="brandhead"><img class="hafflogo" src="haff-logo.jpg" alt="Delvaux's Haff Logo"><div><h1>${esc(t)}</h1><p>${esc(s)}</p></div></div></header>`}
 function totals(){return data.groups.reduce((a,g)=>{a.active+=+g.active||0;a.sep+=+g.separated||0;return a},{active:0,sep:0})}
 function home(){let t=totals(),eg=data.eggs.filter(x=>x.date===day()).reduce((n,x)=>n+(+x.count||0),0);return `${head("Delvaux's Haff","Gemeinsame Hofverwaltung")}<main><div class="stats">
 <div class="card stat"><small>Einzeltiere</small><b>${data.animals.length}</b></div><div class="card stat"><small>Aktive Legehennen</small><b>${t.active}</b></div><div class="card stat"><small>Krank / separiert</small><b>${t.sep}</b></div><div class="card stat"><small>Eier heute</small><b>${eg}</b></div></div>

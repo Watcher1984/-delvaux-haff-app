@@ -1,0 +1,17 @@
+{
+  "name": "Delvaux's Haff",
+  "short_name": "Haff",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f3ec",
+  "theme_color": "#173d2b",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

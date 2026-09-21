@@ -1,7 +1,16 @@
-Update App-Icon:
-- Delvaux's-Haff-Logo als iPhone/Home-Screen-Icon
-- apple-touch-icon.png 180x180
-- PWA Icons 192x192 und 512x512
-- Manifest angepasst
-- Rinder-Checkliste aus der vorherigen Version bleibt enthalten
-- Bestehende lokale Nutzdaten werden nicht zurückgesetzt oder verändert
+Update: Bargeld-Kasse / Hofverkauf
+Nur additive Erweiterung. Bestehende Daten bleiben erhalten.
+
+Neu:
+- Kassenbestand
+- Einnahmen / Ausgaben heute
+- Tagessaldo
+- Einnahme: Hofladen, Eier, Geflügel/Fleisch, Tierverkauf, Sonstiges
+- Ausgabe
+- Einlage / Wechselgeld
+- Entnahme / Bank
+- Tierverkauf mit Tierart, Anzahl, Name/Ohrmarke/Beschreibung
+- Kassenjournal mit Datum und Uhrzeit
+
+Technisch: neuer separater Datenspeicher data.cashEntries.
+Keine bestehende Datenstruktur wird zurückgesetzt.

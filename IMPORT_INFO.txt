@@ -1,7 +1,1 @@
-Rinderimport aus den zwei Sanilux-Screenshots
-17 eindeutige Datensätze importiert; überlappende Zeilen wurden nicht doppelt angelegt.
-Die abgeschnittene individuelle Nummer links wurde NICHT geraten.
-Die Tiere heißen deshalb vorläufig Rind 01 bis Rind 17.
-Übernommen: Rind/Aubrac, Geschlecht, Geburtsdatum, Haarfarbe, Ankunftsdatum soweit sichtbar,
-Herdennummer LU95015938-0101, Rassetyp Fleisch, Situation 1-INV.
-Der Import läuft nur einmal und löscht vorhandene App-Daten nicht.
+Korrektur: 17 Rinder mit Ohrmarken aus den neuen Sanilux-Screenshots. Frühere Platzhalter Rind 01–17 werden automatisch ersetzt. Rind antippen, um Namen und Stammdaten zu bearbeiten.

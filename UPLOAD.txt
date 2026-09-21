@@ -1,0 +1,5 @@
+Delvaux's Haff – Update Hühnerbestand
+Diese Dateien in das GitHub-Repository hochladen und die gleichnamigen Dateien ersetzen.
+Die ZIP-Datei selbst nicht hochladen.
+Bestehende lokale Daten aus der bisherigen App werden nicht absichtlich gelöscht.
+Neu: Zugang, Verendet, Krank/Separiert, Zurück, Abgang und manuelle Bestandskorrektur mit Verlauf.

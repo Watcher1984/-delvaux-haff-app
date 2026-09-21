@@ -1,55 +1,33 @@
 (function(){
 'use strict';
-const KEY='haff-v3';
-const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-const day=()=>new Date().toISOString().slice(0,10);
-let data;
-try{data=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+const KEY='haff-v3', id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2), day=()=>new Date().toISOString().slice(0,10);
+let data;try{data=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!data)data={animals:[],groups:[{id:id(),name:'Mobilstall 1',hens:280}],eggs:[],tasks:[]};
-let page='home';
-function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+data.animals ||= []; data.groups ||= []; data.eggs ||= []; data.tasks ||= [];
+// Non-destructive migration: existing hens become active hens; no old data is erased.
+data.groups.forEach(g=>{if(g.active==null)g.active=Number(g.hens)||0;if(g.separated==null)g.separated=0;if(!Array.isArray(g.movements))g.movements=[];g.hens=g.active+g.separated});
+let page='home', selected=null;
+function save(){data.groups.forEach(g=>g.hens=(+g.active||0)+(+g.separated||0));localStorage.setItem(KEY,JSON.stringify(data))}
+save();
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function nav(){return `<nav><button onclick="H.go('home')"><i>🏠</i>Start</button><button onclick="H.go('animals')"><i>🐄</i>Tiere</button><button onclick="H.go('groups')"><i>🐔</i>Hühner</button><button onclick="H.go('eggs')"><i>🥚</i>Eier</button><button onclick="H.go('tasks')"><i>✅</i>Aufgaben</button></nav>`}
-function head(t,s){return `<header><h1>${t}</h1><p>${s}</p></header>`}
-function home(){
- let hens=data.groups.reduce((n,x)=>n+(+x.hens||0),0);
- let eggs=data.eggs.filter(x=>x.date===day()).reduce((n,x)=>n+(+x.count||0),0);
- return `${head("Delvaux's Haff","Gemeinsame Hofverwaltung")}<main><div class="stats">
- <div class="card stat"><small>Einzeltiere</small><b>${data.animals.length}</b></div>
- <div class="card stat"><small>Legehennen</small><b>${hens}</b></div>
- <div class="card stat"><small>Eier heute</small><b>${eggs}</b></div>
- <div class="card stat"><small>Aufgaben offen</small><b>${data.tasks.filter(x=>!x.done).length}</b></div></div>
- <div class="quick"><button onclick="H.form('egg')">🥚<strong>Eier eintragen</strong><span>Schneller Tageseintrag</span></button>
- <button onclick="H.form('animal')">🐄<strong>Tier hinzufügen</strong><span>Rind, Ziege usw.</span></button>
- <button onclick="H.form('group')">🐔<strong>Hühnergruppe</strong><span>Bestand verwalten</span></button>
- <button onclick="H.form('task')">✅<strong>Aufgabe</strong><span>Arbeit festhalten</span></button></div></main>${nav()}`}
-function list(kind,title,sub,type){
- let rows=data[kind].map(x=>{
-  if(kind==='animals')return `<div class="item"><b>${x.name}</b><small>${x.species||''} ${x.breed||''}</small></div>`;
-  if(kind==='groups')return `<div class="item"><b>${x.name}</b><small>${x.hens||0} Hennen</small></div>`;
-  if(kind==='eggs')return `<div class="item"><b>${x.count} Eier</b><small>${x.date} · ${x.group||''} · Bruch ${x.broken||0}</small></div>`;
-  return `<div class="item"><b>${x.done?'✅':'⬜️'} ${x.title}</b><small>${x.due||''}</small><div class="toolbar"><button class="btn secondary" onclick="H.toggle('${x.id}')">Status ändern</button></div></div>`;
- }).join('')||'<div class="card">Noch keine Einträge.</div>';
- return `${head(title,sub)}<main><div class="toolbar"><button class="btn" onclick="H.form('${type}')">+ Neu</button></div><div class="list">${rows}</div></main>${nav()}`}
-function render(){
- let html=page==='home'?home():page==='animals'?list('animals','Tiere','Einzeltiere verwalten','animal'):page==='groups'?list('groups','Hühner','Gruppen verwalten','group'):page==='eggs'?list('eggs','Eier','Produktion erfassen','egg'):list('tasks','Aufgaben','Arbeiten festhalten','task');
- document.getElementById('app').innerHTML=html
-}
-window.H={
- go(p){page=p;render()},
- toggle(i){let x=data.tasks.find(t=>t.id===i);if(x){x.done=!x.done;save();render()}},
- close(){document.getElementById('modal')?.remove()},
- form(type){
-  let f=type==='animal'?`<div class="field"><label>Name / Ohrmarke</label><input name="name" required></div><div class="field"><label>Tierart</label><input name="species" required></div><div class="field"><label>Rasse</label><input name="breed"></div>`:
-  type==='group'?`<div class="field"><label>Gruppe</label><input name="name" value="Mobilstall 1" required></div><div class="field"><label>Hennen</label><input type="number" name="hens" value="0"></div>`:
-  type==='egg'?`<div class="field"><label>Datum</label><input type="date" name="date" value="${day()}"></div><div class="field"><label>Gruppe</label><input name="group" value="${data.groups[0]?.name||'Mobilstall 1'}"></div><div class="field"><label>Eier</label><input type="number" name="count" required></div><div class="field"><label>Bruch</label><input type="number" name="broken" value="0"></div>`:
-  `<div class="field"><label>Aufgabe</label><input name="title" required></div><div class="field"><label>Fällig</label><input type="date" name="due" value="${day()}"></div>`;
-  let d=document.createElement('div');d.id='modal';d.className='modalbg';d.innerHTML=`<div class="modal"><h2>Neuer Eintrag</h2><form id="entry">${f}</form><div class="actions"><button class="btn secondary" onclick="H.close()">Abbrechen</button><button class="btn" onclick="H.submit('${type}')">Speichern</button></div></div>`;document.body.appendChild(d)
- },
- submit(type){
-  let f=document.getElementById('entry');if(!f.reportValidity())return;let x=Object.fromEntries(new FormData(f));x.id=id();
-  if(type==='animal')data.animals.unshift(x);if(type==='group'){x.hens=+x.hens||0;data.groups.unshift(x)}if(type==='egg'){x.count=+x.count||0;x.broken=+x.broken||0;data.eggs.unshift(x)}if(type==='task'){x.done=false;data.tasks.unshift(x)}
-  save();H.close();render()
- }
-};
-render();
+function head(t,s,back=false){return `<header>${back?`<button class="back" onclick="H.go('groups')">‹ Hühner</button>`:''}<h1>${esc(t)}</h1><p>${esc(s)}</p></header>`}
+function totals(){return data.groups.reduce((a,g)=>{a.active+=+g.active||0;a.sep+=+g.separated||0;return a},{active:0,sep:0})}
+function home(){let t=totals(),eg=data.eggs.filter(x=>x.date===day()).reduce((n,x)=>n+(+x.count||0),0);return `${head("Delvaux's Haff","Gemeinsame Hofverwaltung")}<main><div class="stats">
+<div class="card stat"><small>Einzeltiere</small><b>${data.animals.length}</b></div><div class="card stat"><small>Aktive Legehennen</small><b>${t.active}</b></div><div class="card stat"><small>Krank / separiert</small><b>${t.sep}</b></div><div class="card stat"><small>Eier heute</small><b>${eg}</b></div></div>
+<div class="quick"><button onclick="H.form('egg')">🥚<strong>Eier eintragen</strong><span>Schneller Tageseintrag</span></button><button onclick="H.form('animal')">🐄<strong>Tier hinzufügen</strong><span>Rind, Ziege usw.</span></button><button onclick="H.go('groups')">🐔<strong>Hühnerbestand</strong><span>Zugänge, Verluste, Kranke</span></button><button onclick="H.form('task')">✅<strong>Aufgabe</strong><span>Arbeit festhalten</span></button></div></main>${nav()}`}
+function list(kind,title,sub,type){let rows=data[kind].map(x=>{if(kind==='animals')return `<div class="item"><b>${esc(x.name)}</b><small>${esc(x.species)} ${esc(x.breed)}</small></div>`;if(kind==='groups')return `<div class="item click" onclick="H.group('${x.id}')"><b>🐔 ${esc(x.name)}</b><div class="big">${+x.active||0}</div><small>aktive Hennen · ${+x.separated||0} krank/separiert · ${(+x.active||0)+(+x.separated||0)} gesamt</small></div>`;if(kind==='eggs')return `<div class="item"><b>${+x.count||0} Eier</b><small>${esc(x.date)} · ${esc(x.group)} · Bruch ${+x.broken||0}</small></div>`;return `<div class="item"><b>${x.done?'✅':'⬜️'} ${esc(x.title)}</b><small>${esc(x.due)}</small><div class="toolbar"><button class="btn secondary" onclick="H.toggle('${x.id}')">Status ändern</button></div></div>`}).join('')||'<div class="card">Noch keine Einträge.</div>';return `${head(title,sub)}<main><div class="toolbar"><button class="btn" onclick="H.form('${type}')">+ Neu</button></div><div class="list">${rows}</div></main>${nav()}`}
+const labels={access:'Zugang',dead:'Verendet',separate:'Krank / separiert',return:'Zurück in Bestand',departure:'Abgang / verkauft / geschlachtet',correction:'Bestand korrigiert'};
+function groupPage(){let g=data.groups.find(x=>x.id===selected);if(!g){page='groups';return list('groups','Hühner','Gruppen verwalten','group')}let logs=[...g.movements].reverse().map(m=>`<div class="item"><b class="${m.delta>0?'logpos':m.delta<0?'logneg':''}">${m.delta>0?'+':''}${m.delta||''} ${esc(labels[m.type]||m.type)}</b><small>${esc(m.date)}${m.note?' · '+esc(m.note):''}</small></div>`).join('')||'<div class="card">Noch keine Bestandsbewegungen.</div>';return `${head(g.name,'Bestandsverwaltung',true)}<main>
+<div class="card"><small>Aktive Legehennen</small><div class="big">${+g.active||0}</div><div class="pills"><span class="pill">🏥 ${+g.separated||0} krank / separiert</span><span class="pill">🐔 ${(+g.active||0)+(+g.separated||0)} gesamt</span></div></div>
+<div class="toolbar"><button class="btn" onclick="H.move('access')">➕ Zugang</button><button class="btn danger" onclick="H.move('dead')">☠️ Verendet</button><button class="btn secondary" onclick="H.move('separate')">🏥 Separieren</button><button class="btn secondary" onclick="H.move('return')">🔄 Zurück</button><button class="btn secondary" onclick="H.move('departure')">📤 Abgang</button><button class="btn secondary" onclick="H.move('correction')">✏️ Bestand korrigieren</button></div>
+<h3>Verlauf</h3><div class="list">${logs}</div></main>${nav()}`}
+function render(){let html=page==='home'?home():page==='animals'?list('animals','Tiere','Einzeltiere verwalten','animal'):page==='groups'?list('groups','Hühner','Gruppe antippen, um den Bestand zu ändern','group'):page==='eggs'?list('eggs','Eier','Produktion erfassen','egg'):page==='tasks'?list('tasks','Aufgaben','Arbeiten festhalten','task'):groupPage();document.getElementById('app').innerHTML=html}
+function modal(title,body,saveAction){let d=document.createElement('div');d.id='modal';d.className='modalbg';d.innerHTML=`<div class="modal"><h2>${title}</h2><form id="entry">${body}</form><div class="actions"><button class="btn secondary" onclick="H.close()">Abbrechen</button><button class="btn" onclick="${saveAction}">Speichern</button></div></div>`;document.body.appendChild(d)}
+window.H={go(p){page=p;selected=null;render()},group(i){selected=i;page='group';render()},toggle(i){let x=data.tasks.find(t=>t.id===i);if(x){x.done=!x.done;save();render()}},close(){document.getElementById('modal')?.remove()},
+form(type){let f=type==='animal'?`<div class="field"><label>Name / Ohrmarke</label><input name="name" required></div><div class="field"><label>Tierart</label><input name="species" required></div><div class="field"><label>Rasse</label><input name="breed"></div>`:type==='group'?`<div class="field"><label>Gruppe</label><input name="name" required></div><div class="field"><label>Aktive Hennen</label><input type="number" min="0" name="active" value="0"></div>`:type==='egg'?`<div class="field"><label>Datum</label><input type="date" name="date" value="${day()}"></div><div class="field"><label>Gruppe</label><input name="group" value="${esc(data.groups[0]?.name||'Mobilstall 1')}"></div><div class="field"><label>Eier</label><input type="number" min="0" name="count" required></div><div class="field"><label>Bruch</label><input type="number" min="0" name="broken" value="0"></div>`:`<div class="field"><label>Aufgabe</label><input name="title" required></div><div class="field"><label>Fällig</label><input type="date" name="due" value="${day()}"></div>`;modal('Neuer Eintrag',f,`H.submit('${type}')`)},
+submit(type){let f=document.getElementById('entry');if(!f.reportValidity())return;let x=Object.fromEntries(new FormData(f));x.id=id();if(type==='animal')data.animals.unshift(x);if(type==='group'){x.active=+x.active||0;x.separated=0;x.movements=[];data.groups.unshift(x)}if(type==='egg'){x.count=+x.count||0;x.broken=+x.broken||0;data.eggs.unshift(x)}if(type==='task'){x.done=false;data.tasks.unshift(x)}save();H.close();render()},
+move(type){let g=data.groups.find(x=>x.id===selected);if(!g)return;if(type==='correction'){modal('Bestand korrigieren',`<div class="field"><label>Aktive Legehennen</label><input type="number" min="0" name="amount" value="${g.active}" required></div><div class="field"><label>Notiz / Grund</label><input name="note" placeholder="z. B. Zählkorrektur"></div>`,`H.saveMove('${type}')`);return}let max=(type==='return'?g.separated:g.active);let title=labels[type];modal(title,`<div class="field"><label>Anzahl</label><input type="number" min="1" ${type==='access'?'':`max="${max}"`} name="amount" value="1" required></div><div class="field"><label>Datum</label><input type="date" name="date" value="${day()}" required></div><div class="field"><label>Notiz</label><input name="note" placeholder="optional"></div>`,`H.saveMove('${type}')`)},
+saveMove(type){let g=data.groups.find(x=>x.id===selected),f=document.getElementById('entry');if(!g||!f.reportValidity())return;let v=Object.fromEntries(new FormData(f)),n=+v.amount||0,delta=0;if(type==='correction'){delta=n-g.active;g.active=n}else if(type==='access'){g.active+=n;delta=n}else if(type==='dead'||type==='departure'){g.active=Math.max(0,g.active-n);delta=-n}else if(type==='separate'){g.active=Math.max(0,g.active-n);g.separated+=n;delta=-n}else if(type==='return'){g.separated=Math.max(0,g.separated-n);g.active+=n;delta=n}g.movements.push({id:id(),type,date:v.date||day(),amount:n,delta,note:v.note||''});save();H.close();render()}
+};render();
 })();

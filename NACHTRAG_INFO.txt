@@ -1,0 +1,11 @@
+Einmaliger Nachtrag Hennenbestand
+Ausgangsbestand: 275 Hennen
+20.07.2026: 1 verendet
+31.08.2026: 5 verendet, teilweise zerfressen oder schwach
+20.09.2026: 4 verendet, Herzinfarkt
+20.09.2026: 2 verendet, Greifvögel
+Historische Verluste gesamt: 12
+Aktiver Bestand danach: 263
+
+Wichtig: Dieser Patch verändert ausschließlich die Hühnergruppe. Rinder/Tiere, Ohrmarken, Namen, Eier und Aufgaben werden nicht gelöscht oder zurückgesetzt.
+Der Nachtrag ist mit einer lokalen Patch-ID versehen und wird nur einmal ausgeführt.

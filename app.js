@@ -13,7 +13,28 @@ if(!localStorage.getItem('haff-cattle-ear-tags-20260921')){
   localStorage.setItem('haff-cattle-ear-tags-20260921','1');
 }
 // Non-destructive migration: existing hens become active hens; no old data is erased.
+
 data.groups.forEach(g=>{if(g.active==null)g.active=Number(g.hens)||0;if(g.separated==null)g.separated=0;if(!Array.isArray(g.movements))g.movements=[];g.hens=g.active+g.separated});
+// Einmaliger historischer Nachtrag. Nur die Hühnergruppe wird ergänzt; Tier-/Rinderdaten, Eier und Aufgaben bleiben unberührt.
+// Ausgangsbestand war 275 Hennen. Historische Verluste: 1 + 5 + 6 = 12. Daraus aktueller aktiver Bestand 263.
+if(!localStorage.getItem('haff-hen-history-patch-20260921-v1')){
+  let g=data.groups.find(x=>x.name==='Mobilstall 1') || data.groups[0];
+  if(g){
+    const patchId='hen-history-20260921-v1';
+    g.movements=(g.movements||[]).filter(m=>m.patchId!==patchId);
+    const historical=[
+      {id:'hist-dead-2026-07-20',type:'dead',date:'2026-07-20',amount:1,delta:-1,note:'Verendet',patchId},
+      {id:'hist-dead-2026-08-31',type:'dead',date:'2026-08-31',amount:5,delta:-5,note:'Teilweise zerfressen oder schwach',patchId},
+      {id:'hist-dead-2026-09-20-heart',type:'dead',date:'2026-09-20',amount:4,delta:-4,note:'Herzinfarkt',patchId},
+      {id:'hist-dead-2026-09-20-bird',type:'dead',date:'2026-09-20',amount:2,delta:-2,note:'Greifvögel',patchId}
+    ];
+    g.movements.push(...historical);
+    g.active=263;
+    g.separated=Number(g.separated)||0;
+    g.hens=g.active+g.separated;
+  }
+  localStorage.setItem('haff-hen-history-patch-20260921-v1','1');
+}
 let page='home', selected=null;
 function save(){data.groups.forEach(g=>g.hens=(+g.active||0)+(+g.separated||0));localStorage.setItem(KEY,JSON.stringify(data))}
 save();
